@@ -2,31 +2,40 @@ package com.payroll.auth.service.controller;
 
 
 import com.payroll.auth.service.dto.LoginDto;
-import com.payroll.auth.service.service.LoginService;
+import com.payroll.auth.service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
-public class LoginController {
+public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private LoginService loginService;
+    private AuthService authService;
 
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto)
     {
-        String token=loginService.login(loginDto);
+        String token=authService.login(loginDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/validate")
+    public ResponseEntity<String> validateToken(@RequestHeader("Authorization") String token) {
+        boolean isValid = authService.validate(token);
+
+        if (isValid) {
+            return ResponseEntity.ok("Token is valid.");
+        } else {
+            return ResponseEntity.status(401).body("Invalid or expired token.");
+        }
     }
 
 
