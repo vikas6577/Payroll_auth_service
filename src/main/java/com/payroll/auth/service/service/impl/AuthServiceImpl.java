@@ -1,6 +1,7 @@
 package com.payroll.auth.service.service.impl;
 
 import com.payroll.auth.service.dto.LoginDto;
+import com.payroll.auth.service.dto.LoginResponseDto;
 import com.payroll.auth.service.entity.EmployeeEntity;
 import com.payroll.auth.service.repository.EmployeeRepository;
 import com.payroll.auth.service.service.AuthService;
@@ -28,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public String login(LoginDto loginDto)
+    public LoginResponseDto login(LoginDto loginDto)
     {
         EmployeeEntity employee = employeeRepository.findByEmail(loginDto.getEmail());
 
@@ -37,11 +38,15 @@ public class AuthServiceImpl implements AuthService {
 
             if (isPasswordMatch) {
                 // Generate JWT token
-                return jwtUtil.generateToken(employee.getEmail());
+                LoginResponseDto loginResponseDto= LoginResponseDto.builder()
+                        .role(employee.getRole())
+                        .token(jwtUtil.generateToken(employee.getEmail()))
+                        .build();
+                return loginResponseDto;
             }
         }
 
-        return "Invalid username or password";
+        return null;
 
     }
 
