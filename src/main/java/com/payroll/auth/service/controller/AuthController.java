@@ -2,6 +2,7 @@ package com.payroll.auth.service.controller;
 
 
 import com.payroll.auth.service.dto.LoginDto;
+import com.payroll.auth.service.dto.LoginResponseDto;
 import com.payroll.auth.service.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.function.LongFunction;
+@CrossOrigin
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
@@ -20,10 +23,10 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto)
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginDto loginDto)
     {
-        String token=authService.login(loginDto);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        LoginResponseDto loginResponseDto=authService.login(loginDto);
+        return new ResponseEntity<>(loginResponseDto, HttpStatus.OK);
     }
 
 
